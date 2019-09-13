@@ -1,9 +1,11 @@
-from flask import Flask
+from flask import Flask, request
+from caesar import rotate_string
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-form = """<!DOCTYPE html>
+form = """
+<!DOCTYPE html>
 
 <html>
     <head>
@@ -25,11 +27,34 @@ form = """<!DOCTYPE html>
     </head>
     <body>
       <!-- create your form here -->
+      <form method="POST">
+    <label>
+        Rotate by:
+        <input type="text" value="0" name="rot"/>
+    </label>
+
+    <br>
+    <br>
+
+    <textarea name="text"></textarea>
+    <br>
+
+    <input type="submit"/>
+
+</form>
     </body>
 </html>"""
 
-@app.rote("/")
+@app.route("/", methods=['POST'])
+def encrypt():
+    text = str(request.form['text'])
+    rot = int(request.form['rot'])
+    encryptedText = ""
+    encryptedText = rotate_string(text, rot)
+    return """<h1>{encrypted}</h1>""".format(encrypted=encryptedText)
+
+@app.route("/")
 def index():
-    return "Hello World"
+    return form
 
 app.run()
